@@ -6,7 +6,7 @@
       "path": "force-app",
       "default": true,
       "package": "mrflow",
-      "versionDescription": "Mr. Flow App - Unlocked Package"
+      "versionDescription": "Mr. Flow App - OpenSource Package"
     }
   ],
   "name": "MRFLOW",

@@ -13,3 +13,14 @@ package.xml
 # claude code
 /.claude
 /specs
+
+# Profiles
+**/profiles/Admin.profile-meta.xml
+**/profiles/Trial Customer Portal User.profile-meta.xml
+
+# App Menu
+**/appMenus/AppSwitcher.appMenu-meta.xml
+
+# Global Value Sets
+**/globalValueSets/MF_AIProviders.globalValueSet-meta.xml
+**/globalValueSets/MF_AIModels.globalValueSet-meta.xml
