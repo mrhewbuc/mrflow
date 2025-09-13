@@ -1,0 +1,64 @@
+# Salesforce DX
+.sfdx/
+.localdevserver/
+.sf/
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
+
+# IDE
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.iml
+
+# Temp files
+*~
+*.swp
+*.tmp
+
+# Package files
+*.tgz
+
+# Local environment files
+.env
+.env.local
+
+# Salesforce cache
+.tern-project
+.settings
+.metadata
+.project
+.classpath
+
+# Illuminated Cloud (IntelliJ IDEA)
+IlluminatedCloud/
+*.iml
+.idea/
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# PMD
+.pmdCache
+
+# Husky
+.husky/_
+
+# claude code
+/.claude
+
+/specs

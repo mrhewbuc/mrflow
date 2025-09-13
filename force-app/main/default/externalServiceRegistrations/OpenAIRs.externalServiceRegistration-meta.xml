@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExternalServiceRegistration xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Response API</description>
+    <label>OpenAIRs</label>
+    <namedCredentialReference>OpenAI</namedCredentialReference>
+    <operations>
+        <active>true</active>
+        <name>createresponse</name>
+    </operations>
+    <registrationProviderType>Custom</registrationProviderType>
+    <schema>openapi: 3.0.3
+info:
+  title: OpenAI Responses API
+  description: OpenAI Responses API for Salesforce External Services integration
+  version: 1.0.0
+servers:
+  - url: https://api.openai.com/v1
+    description: OpenAI Production API
+paths:
+  /responses:
+    post:
+      summary: Create response
+      operationId: createResponse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: &apos;#/components/schemas/Request&apos;
+      responses:
+        &apos;200&apos;:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: &apos;#/components/schemas/Response&apos;
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Request:
+      type: object
+      required:
+        - model
+        - input
+      properties:
+        model:
+          type: string
+          description: ID of the model to use
+          example: &quot;gpt-4.1&quot;
+        input:
+          $ref: &apos;#/components/schemas/InputMessages&apos;
+        max_output_tokens:
+          type: integer
+          description: Upper bound for tokens that can be generated including visible and reasoning tokens
+        max_tool_calls:
+          type: integer
+          description: Maximum number of total calls to built-in tools that can be processed
+        include:
+          $ref: &apos;#/components/schemas/IncludeOptions&apos;
+        instructions:
+          type: string
+          description: A system or developer message inserted into the model context
+        previous_response_id:
+          type: string
+          description: The unique ID of the previous response for multi-turn conversations
+        parallel_tool_calls:
+          type: boolean
+          description: Whether to allow the model to run tool calls in parallel
+          default: true
+        prompt_cache_key:
+          type: string
+          description: Used by OpenAI to cache responses for similar requests
+        prompt:
+          type: object
+          properties:
+            id:
+              type: string
+              description: The unique identifier of the prompt template
+            variables:
+              type: object
+              additionalProperties: true
+              description: Map of values to substitute in prompt variables
+            version:
+              type: string
+              description: Optional version of the prompt template
+        text:
+          type: object
+          properties:
+            format:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [&quot;text&quot;, &quot;json_object&quot;, &quot;json_schema&quot;]
+                  default: &quot;text&quot;
+                json_schema:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    schema:
+                      type: object
+                      additionalProperties: true
+                    strict:
+                      type: boolean
+        tool_choice:
+          type: string
+          description: Controls which tool is called by the model
+          enum: [&quot;none&quot;, &quot;auto&quot;, &quot;required&quot;]
+        tools:
+          $ref: &apos;#/components/schemas/ResponseTools&apos;
+        temperature:
+          type: number
+          description: Sampling temperature between 0 and 2
+          default: 1
+          minimum: 0
+          maximum: 2
+    InputMessages:
+      type: array
+      items:
+        type: object
+        required:
+          - role
+          - content
+        properties:
+          role:
+            type: string
+            enum: [&quot;system&quot;, &quot;user&quot;, &quot;assistant&quot;, &quot;developer&quot;]
+            description: The role of the message author
+          content:
+            $ref: &apos;#/components/schemas/MessageContent&apos;
+    MessageContent:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [&quot;input_text&quot;, &quot;input_file&quot;, &quot;input_image&quot;]
+          text:
+            type: string
+            description: Text content when type is input_text
+          file_url:
+            type: string
+            description: URL of the file when type is input_file
+          file_data:
+            type: string
+            description: Base64 encoded file data
+          filename:
+            type: string
+            description: Name of the file
+          image_url:
+            type: object
+            properties:
+              url:
+                type: string
+                description: URL or base64 data of the image
+              detail:
+                type: string
+                enum: [&quot;low&quot;, &quot;high&quot;, &quot;auto&quot;]
+                default: &quot;auto&quot;
+    IncludeOptions:
+      type: array
+      items:
+        type: string
+        enum: 
+          - &quot;code_interpreter_call.outputs&quot;
+          - &quot;computer_call_output.output.image_url&quot;
+          - &quot;file_search_call.results&quot;
+          - &quot;message.input_image.image_url&quot;
+          - &quot;message.output_text.logprobs&quot;
+          - &quot;reasoning.encrypted_content&quot;
+    ResponseTools:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [&quot;function&quot;, &quot;file_search&quot;, &quot;web_search&quot;, &quot;computer_use&quot;, &quot;mcp_tool&quot;, &quot;code_interpreter&quot;, &quot;image_generation&quot;, &quot;local_shell&quot;, &quot;custom&quot;]
+          function:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The name of the function to be called
+              description:
+                type: string
+                description: A description of what the function does
+              parameters:
+                type: object
+                description: The parameters the function accepts
+                properties:
+                  type:
+                    type: string
+                    enum: [&quot;object&quot;]
+                    default: &quot;object&quot;
+                  properties:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum: [&quot;string&quot;, &quot;number&quot;, &quot;integer&quot;, &quot;boolean&quot;, &quot;array&quot;, &quot;object&quot;]
+                        description:
+                          type: string
+                        enum:
+                          type: array
+                          items:
+                            type: string
+                  required:
+                    type: array
+                    items:
+                      type: string
+          file_search:
+            type: object
+            properties:
+              max_num_results:
+                type: integer
+                description: Maximum number of results to return
+          web_search:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+                default: true
+          computer_use:
+            type: object
+            properties:
+              display_width:
+                type: integer
+              display_height:
+                type: integer
+          code_interpreter:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+                default: true
+          image_generation:
+            type: object
+            properties:
+              model:
+                type: string
+                example: &quot;gpt-image-1&quot;
+          mcp_tool:
+            type: object
+            properties:
+              server_url:
+                type: string
+              name:
+                type: string
+          local_shell:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+          custom:
+            type: object
+            properties:
+              name:
+                type: string
+              format:
+                type: string
+    Response:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the response
+        object:
+          type: string
+          enum: [&quot;response&quot;]
+        created_at:
+          type: integer
+          description: Unix timestamp of when the response was created
+        status:
+          type: string
+          enum: [&quot;completed&quot;, &quot;in_progress&quot;, &quot;queued&quot;, &quot;failed&quot;, &quot;cancelled&quot;]
+        error:
+          type: object
+        incomplete_details:
+          type: object
+        instructions:
+          type: string
+        max_output_tokens:
+          type: integer
+        max_tool_calls:
+          type: integer
+        model:
+          type: string
+          description: The model used for the response
+        output:
+          $ref: &apos;#/components/schemas/OutputItems&apos;
+        parallel_tool_calls:
+          type: boolean
+        previous_response_id:
+          type: string
+        reasoning:
+          type: object
+          properties:
+            effort:
+              type: string
+            summary:
+              type: string
+        store:
+          type: boolean
+        temperature:
+          type: number
+        text:
+          type: object
+          properties:
+            format:
+              type: object
+              properties:
+                type:
+                  type: string
+        tool_choice:
+          type: string
+        tools:
+          $ref: &apos;#/components/schemas/ResponseTools&apos;
+        top_p:
+          type: number
+        truncation:
+          type: string
+        usage:
+          type: object
+          properties:
+            input_tokens:
+              type: integer
+            input_tokens_details:
+              type: object
+              properties:
+                cached_tokens:
+                  type: integer
+            output_tokens:
+              type: integer
+            output_tokens_details:
+              type: object
+              properties:
+                reasoning_tokens:
+                  type: integer
+            total_tokens:
+              type: integer
+        user:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        background:
+          type: boolean
+        service_tier:
+          type: string
+        top_logprobs:
+          type: integer
+    OutputItems:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          type:
+            type: string
+            enum: [&quot;message&quot;, &quot;web_search_call&quot;, &quot;tool_call&quot;]
+          status:
+            type: string
+            enum: [&quot;completed&quot;, &quot;in_progress&quot;, &quot;failed&quot;]
+          role:
+            type: string
+            enum: [&quot;assistant&quot;, &quot;tool&quot;]
+          content:
+            $ref: &apos;#/components/schemas/OutputContent&apos;
+    OutputContent:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [&quot;output_text&quot;]
+          text:
+            type: string
+          annotations:
+            $ref: &apos;#/components/schemas/Annotations&apos;
+          logprobs:
+            type: array
+            items:
+              type: object
+    Annotations:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [&quot;url_citation&quot;]
+          start_index:
+            type: integer
+          end_index:
+            type: integer
+          url:
+            type: string
+          title:
+            type: string</schema>
+    <schemaType>OpenApi3</schemaType>
+    <serviceBinding>{&quot;host&quot;:&quot;api.openai.com&quot;,&quot;basePath&quot;:&quot;/v1&quot;,&quot;allowedSchemes&quot;:[&quot;HTTPS&quot;],&quot;requestMediaTypes&quot;:[],&quot;responseMediaTypes&quot;:[],&quot;compatibleMediaTypes&quot;:{},&quot;extensions&quot;:{}}</serviceBinding>
+    <status>Complete</status>
+    <systemVersion>7</systemVersion>
+</ExternalServiceRegistration>

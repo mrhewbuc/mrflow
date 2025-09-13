@@ -1,0 +1,19 @@
+{
+  "packageDirectories": [
+    {
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "path": "force-app",
+      "default": true,
+      "package": "mrflow",
+      "versionDescription": "Mr. Flow App - Unlocked Package"
+    }
+  ],
+  "name": "MRFLOW",
+  "namespace": "mrhewbuc",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "64.0",
+  "packageAliases": {
+    "mrflow": "0HoJ8000000Gmb7KAC"
+  }
+}
