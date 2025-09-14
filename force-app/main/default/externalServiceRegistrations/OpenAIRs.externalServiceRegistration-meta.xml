@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ExternalServiceRegistration xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Response API</description>
     <label>OpenAIRs</label>
     <namedCredentialReference>OpenAI</namedCredentialReference>
     <operations>
@@ -114,7 +113,7 @@ components:
           description: Controls which tool is called by the model
           enum: [&quot;none&quot;, &quot;auto&quot;, &quot;required&quot;]
         tools:
-          $ref: &apos;#/components/schemas/ResponseTools&apos;
+          $ref: &apos;#/components/schemas/Tools&apos;
         temperature:
           type: number
           description: Sampling temperature between 0 and 2
@@ -125,14 +124,17 @@ components:
       type: array
       items:
         type: object
-        required:
-          - role
-          - content
         properties:
           role:
             type: string
             enum: [&quot;system&quot;, &quot;user&quot;, &quot;assistant&quot;, &quot;developer&quot;]
             description: The role of the message author
+          call_id:
+            type: string
+          output:
+            type: string
+          type:
+            type: string            
           content:
             $ref: &apos;#/components/schemas/MessageContent&apos;
     MessageContent:
@@ -176,7 +178,7 @@ components:
           - &quot;message.input_image.image_url&quot;
           - &quot;message.output_text.logprobs&quot;
           - &quot;reasoning.encrypted_content&quot;
-    ResponseTools:
+    Tools:
       type: array
       items:
         type: object
@@ -184,91 +186,55 @@ components:
           type:
             type: string
             enum: [&quot;function&quot;, &quot;file_search&quot;, &quot;web_search&quot;, &quot;computer_use&quot;, &quot;mcp_tool&quot;, &quot;code_interpreter&quot;, &quot;image_generation&quot;, &quot;local_shell&quot;, &quot;custom&quot;]
-          function:
+          name:
+            type: string
+            description: The name of the function (when type is function)
+          description:
+            type: string
+            description: Description of what the function does (when type is function)
+          strict:
+            type: boolean
+            description: Ensure the model&apos;s response always follows this schema (when type is function)
+          parameters:
             type: object
+            description: The parameters the function accepts (when type is function)
             properties:
-              name:
+              type:
                 type: string
-                description: The name of the function to be called
-              description:
-                type: string
-                description: A description of what the function does
-              parameters:
+                enum: [&quot;object&quot;]
+                default: &quot;object&quot;
+              properties:
                 type: object
-                description: The parameters the function accepts
-                properties:
-                  type:
-                    type: string
-                    enum: [&quot;object&quot;]
-                    default: &quot;object&quot;
-                  properties:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum: [&quot;string&quot;, &quot;number&quot;, &quot;integer&quot;, &quot;boolean&quot;, &quot;array&quot;, &quot;object&quot;]
-                        description:
-                          type: string
-                        enum:
-                          type: array
-                          items:
-                            type: string
-                  required:
-                    type: array
-                    items:
-                      type: string
-          file_search:
-            type: object
-            properties:
-              max_num_results:
-                type: integer
-                description: Maximum number of results to return
-          web_search:
-            type: object
-            properties:
-              enabled:
+                description: Dynamic parameter properties
+                additionalProperties: true
+              required:
+                type: array
+                items:
+                  type: string
+              additionalProperties:
                 type: boolean
-                default: true
-          computer_use:
-            type: object
-            properties:
-              display_width:
-                type: integer
-              display_height:
-                type: integer
-          code_interpreter:
-            type: object
-            properties:
-              enabled:
-                type: boolean
-                default: true
-          image_generation:
-            type: object
-            properties:
-              model:
-                type: string
-                example: &quot;gpt-image-1&quot;
-          mcp_tool:
-            type: object
-            properties:
-              server_url:
-                type: string
-              name:
-                type: string
-          local_shell:
-            type: object
-            properties:
-              enabled:
-                type: boolean
-          custom:
-            type: object
-            properties:
-              name:
-                type: string
-              format:
-                type: string
+          # Properties for other tool types (keep these as they are)
+          max_num_results:
+            type: integer
+            description: Maximum number of results (for file_search)
+          enabled:
+            type: boolean
+            description: Whether the tool is enabled (for web_search, code_interpreter)
+          display_width:
+            type: integer
+            description: Display width (for computer_use)
+          display_height:
+            type: integer
+            description: Display height (for computer_use)
+          model:
+            type: string
+            description: Model to use (for image_generation)
+          server_url:
+            type: string
+            description: Server URL (for mcp_tool)
+          format:
+            type: string
+            description: Format (for custom tools)
     Response:
       type: object
       properties:
@@ -325,7 +291,7 @@ components:
         tool_choice:
           type: string
         tools:
-          $ref: &apos;#/components/schemas/ResponseTools&apos;
+          $ref: &apos;#/components/schemas/Tools&apos;
         top_p:
           type: number
         truncation:
@@ -365,17 +331,26 @@ components:
       items:
         type: object
         properties:
-          id:
-            type: string
           type:
             type: string
-            enum: [&quot;message&quot;, &quot;web_search_call&quot;, &quot;tool_call&quot;]
+            enum: [&quot;message&quot;, &quot;web_search_call&quot;, &quot;tool_call&quot;, &quot;function_call&quot;]
+          id:
+            type: string
           status:
             type: string
             enum: [&quot;completed&quot;, &quot;in_progress&quot;, &quot;failed&quot;]
           role:
             type: string
             enum: [&quot;assistant&quot;, &quot;tool&quot;]
+          name:
+            type: string
+            description: Name of the function being called
+          call_id:
+            type: string
+            description: Unique identifier for this function call
+          arguments:
+            type: string
+            description: JSON string of function arguments
           content:
             $ref: &apos;#/components/schemas/OutputContent&apos;
     OutputContent:

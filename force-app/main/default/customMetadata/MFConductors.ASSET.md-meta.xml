@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>ASSET</label>
+    <protected>false</protected>
+    <values>
+        <field>AIModel__c</field>
+        <value xsi:type="xsd:string">gpt-4.1-mini</value>
+    </values>
+    <values>
+        <field>AIProvider__c</field>
+        <value xsi:type="xsd:string">OpenAI</value>
+    </values>
+    <values>
+        <field>MaxToolsCalls__c</field>
+        <value xsi:type="xsd:double">10.0</value>
+    </values>
+    <values>
+        <field>ParallelToolCalls__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>System_Prompt__c</field>
+        <value xsi:type="xsd:string">Extract the customer code (ani) from the user&apos;s message and ALWAYS pass it to the called tool. Do not call any tool with empty arguments.</value>
+    </values>
+</CustomMetadata>
