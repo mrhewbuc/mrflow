@@ -146,42 +146,7 @@ An open, flexible flow that works with ANY AI provider:
 - [ ] **Agent Marketplace** - Share and discover community-built agents
 - [ ] **Natural Language Flow Builder** - Create flows using plain English
 
-## 🛠️ Development
-
-### Prerequisites for Package Installation
-- Salesforce org (Production, Sandbox, or Developer Edition)
-- System Administrator profile or appropriate permissions
-
-### For Contributors & Developers Only
-
-If you're contributing to the codebase, you'll also need:
-- Salesforce CLI
-- Node.js 18+ (for development only)
-- VS Code with Salesforce Extensions
-
-**Development Setup:**
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Run tests:
-```bash
-npm test
-```
-
-3. Format code:
-```bash
-npm run prettier
-```
-
-4. Lint:
-```bash
-npm run lint
-```
-
-### Project Structure
+## 📁 Project Structure
 ```
 mrflow/
 ├── force-app/
@@ -192,7 +157,6 @@ mrflow/
 │           ├── customMetadata/   # AI conductor configurations
 │           └── objects/          # Custom objects and events
 ├── config/                       # Scratch org definitions
-├── .claude/                      # Claude Code documentation
 └── manifest/                     # Package manifests
 ```
 
