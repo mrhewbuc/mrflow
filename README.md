@@ -43,7 +43,7 @@ https://test.salesforce.com/packaging/installPackage.apexp?p0=04tJ8000000xA9WIAU
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/mrflow.git
+git clone https://github.com/mrhewbuc/mrflow.git
 cd mrflow
 ```
 
@@ -181,9 +181,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💬 Community & Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/mrflow/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/mrflow/discussions)
-- **Email**: mrflow@yourdomain.com
+- **Issues**: [GitHub Issues](https://github.com/mrhewbuc/mrflow/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/mrhewbuc/mrflow/discussions)
 
 ## 🌟 Star Us!
 
