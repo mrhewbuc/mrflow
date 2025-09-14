@@ -148,12 +148,18 @@ An open, flexible flow that works with ANY AI provider:
 
 ## 🛠️ Development
 
-### Prerequisites
+### Prerequisites for Package Installation
+- Salesforce org (Production, Sandbox, or Developer Edition)
+- System Administrator profile or appropriate permissions
+
+### For Contributors & Developers Only
+
+If you're contributing to the codebase, you'll also need:
 - Salesforce CLI
-- Node.js 18+
+- Node.js 18+ (for development only)
 - VS Code with Salesforce Extensions
 
-### Setup Development Environment
+**Development Setup:**
 
 1. Install dependencies:
 ```bash
@@ -190,31 +196,13 @@ mrflow/
 └── manifest/                     # Package manifests
 ```
 
-## 🤝 Contributing
-
-We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help makes MrFlow better for everyone.
-
-### How to Contribute
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Development Guidelines
-
-- Write tests for new functionality
-- Follow existing code patterns and naming conventions
-- Update documentation for significant changes
-- Ensure all tests pass before submitting PR
-
 ## 📚 Documentation
 
-- [Architecture Overview](.claude/CLAUDE.md) - Technical deep dive
-- [API Reference](docs/api.md) - Coming soon
-- [Flow Examples](docs/examples.md) - Coming soon
-- [Troubleshooting](docs/troubleshooting.md) - Coming soon
+- Getting Started Guide - Coming soon
+- API Reference - Coming soon
+- Flow Templates - Coming soon
+- Video Tutorials - Coming soon
+- Best Practices - Coming soon
 
 ## 🙏 Acknowledgments
 
