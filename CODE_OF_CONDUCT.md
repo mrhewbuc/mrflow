@@ -22,7 +22,7 @@ As the project maintainer, I will review and address any reported issues fairly 
 
 ## Contact
 
-Report issues to: [Your contact email or GitHub issues]
+Report issues via: https://github.com/mrhewbuc/mrflow/issues
 
 ---
 

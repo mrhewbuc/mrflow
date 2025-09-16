@@ -9,8 +9,8 @@ We take security seriously. If you discover a security vulnerability in MrFlow, 
 **DO NOT** create a public GitHub issue for security vulnerabilities.
 
 Instead, please report security issues via:
-- Email: [Your security contact email]
-- Or create a private security advisory on GitHub
+- Create a private security advisory on GitHub
+- Or use the private vulnerability reporting feature in GitHub
 
 ## What to Include
 
