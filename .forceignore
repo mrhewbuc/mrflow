@@ -13,6 +13,7 @@ package.xml
 # claude code
 /.claude
 /specs
+/.vscode
 
 # Profiles
 **/profiles/Admin.profile-meta.xml
