@@ -113,6 +113,7 @@
     </decisions>
     <environments>Default</environments>
     <interviewLabel>Mr. Flow - Signals {!$Flow.CurrentDateTime}</interviewLabel>
+    <isOverridable>true</isOverridable>
     <label>Signals - PEvent - Orchestrator</label>
     <processMetadataValues>
         <name>BuilderType</name>

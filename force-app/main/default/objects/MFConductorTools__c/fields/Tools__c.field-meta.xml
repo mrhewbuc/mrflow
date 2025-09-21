@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tools__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <label>Tools</label>
+    <referenceTo>MFTools__c</referenceTo>
+    <relationshipLabel>Conductor Tools</relationshipLabel>
+    <relationshipName>Conductor_Tools</relationshipName>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

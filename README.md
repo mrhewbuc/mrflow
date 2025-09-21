@@ -67,6 +67,9 @@ A dedicated, optimized flow specifically for OpenAI integration:
 - [ ] **Universal Provider Flow Enhancement** - Creating a open flow to support any providers out-of-the-box
 - [ ] **Parallel Tools Calls** - Enable parallel tools calls handling
 
+### 📒 Tech Debts
+- [ ] **Enhanced CMDT Management** – Update custom metadata types accordingly with custom object updates
+
 ### 🚀 Future Vision
 - [ ] **Flow Template Library** - Pre-built agentic flow patterns that require zero Apex
 - [ ] **Multi-Agent Orchestration** - Coordinate multiple AI agents within flows

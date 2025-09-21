@@ -10,6 +10,9 @@
         <connector>
             <targetReference>ResponseCode</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Create_OpenAI_Error</targetReference>
+        </faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>body</name>
@@ -35,7 +38,7 @@
         <inputParameters>
             <name>propertiesJson</name>
             <value>
-                <stringValue>{&quot;ani&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;description&quot;:&quot;Customer code&quot;}}</stringValue>
+                <elementReference>Get_Tool.Properties__c</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -47,6 +50,36 @@
         <nameSegment>mf_FlowUtils_OpenAI_ToolObjRequest</nameSegment>
         <offset>0</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
+        <name>Set_Required</name>
+        <label>Set Required</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>mf_FlowUtils_OpenAI_ToolObjRequest</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Set_Properties</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>requiredFieldsString</name>
+            <value>
+                <elementReference>Get_Tool.Required_Params__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>toolObject</name>
+            <value>
+                <elementReference>Tool</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>mf_FlowUtils_OpenAI_ToolObjRequest</nameSegment>
+        <offset>0</offset>
+        <outputParameters>
+            <assignToReference>Tool</assignToReference>
+            <name>toolObject</name>
+        </outputParameters>
     </actionCalls>
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -63,7 +96,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Call_OpenAI</targetReference>
+            <targetReference>LP</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -257,14 +290,14 @@
             <assignToReference>Tool.name</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>tool_get_active_asset_list</stringValue>
+                <elementReference>Get_Tool.Name</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>Tool.description</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Retrieve all active assets for a given customer. The caller must provide the customer code (ani).</stringValue>
+                <elementReference>Get_Tool.Description__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -275,13 +308,6 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>Tool.parameters.required</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>ani</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>Tool.parameters.additionalProperties</assignToReference>
             <operator>Assign</operator>
             <value>
@@ -289,7 +315,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Set_Properties</targetReference>
+            <targetReference>Set_Required</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -487,20 +513,21 @@
             <name>HasTools</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>in_hasCustomTools</leftValueReference>
+                <leftValueReference>Configs.hasTools__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Set_Tool</targetReference>
+                <targetReference>Get_Conductor_Tools</targetReference>
             </connector>
             <label>HasTools</label>
         </rules>
     </decisions>
     <environments>Default</environments>
     <interviewLabel>OpenAI - Async Call - Response Endpoint {!$Flow.CurrentDateTime}</interviewLabel>
+    <isOverridable>true</isOverridable>
     <label>OpenAI - Async Call - Response Endpoint</label>
     <loops>
         <name>Extract_Content</name>
@@ -527,6 +554,20 @@
             <targetReference>Function_Call</targetReference>
         </nextValueConnector>
     </loops>
+    <loops>
+        <name>LP</name>
+        <label>LP</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>Get_Conductor_Tools</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Get_Tool</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Call_OpenAI</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -547,6 +588,32 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordCreates>
+        <name>Create_OpenAI_Error</name>
+        <label>Create OpenAI Error</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Error__c</field>
+            <value>
+                <stringValue>{!Call_OpenAI.defaultExc} - {!$Flow.FaultMessage}</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Process__c</field>
+            <value>
+                <stringValue>OpenAI - Async Call - Response Endpoint(Flow)</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Step__c</field>
+            <value>
+                <stringValue>Call OpenAI</stringValue>
+            </value>
+        </inputAssignments>
+        <object>MFErrors__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
         <name>Create_Signal</name>
         <label>Create Signal</label>
         <locationX>0</locationX>
@@ -554,6 +621,9 @@
         <connector>
             <targetReference>Extract_Output</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Crete_Signal_Error</targetReference>
+        </faultConnector>
         <inputAssignments>
             <field>Action__c</field>
             <value>
@@ -593,6 +663,32 @@
         <object>MFSignals__e</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
+    <recordCreates>
+        <name>Crete_Signal_Error</name>
+        <label>Crete Signal Error</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Error__c</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Process__c</field>
+            <value>
+                <stringValue>OpenAI - Async Call - Response Endpoint(Flow)</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Step__c</field>
+            <value>
+                <stringValue>Create Signal</stringValue>
+            </value>
+        </inputAssignments>
+        <object>MFErrors__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordLookups>
         <name>Configs</name>
         <label>Configs</label>
@@ -614,6 +710,48 @@
         <object>MFConductors__mdt</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Conductor_Tools</name>
+        <label>Get Conductor Tools</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>LP</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Conductor__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>in_ConductorName</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>MFConductorTools__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Tool</name>
+        <label>Get Tool</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Set_Tool</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>LP.Tools__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>MFTools__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -628,16 +766,6 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>in_hasCustomTools</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <booleanValue>false</booleanValue>
-        </value>
     </variables>
     <variables>
         <name>in_NewInstructions</name>

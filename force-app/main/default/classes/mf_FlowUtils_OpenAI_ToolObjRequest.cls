@@ -1,41 +1,37 @@
 /**
- * @description Helper class for setting dynamic properties on OpenAI Tool objects in Salesforce External Services.
- * Handles the transformation of JSON properties to match the Salesforce-generated class structure
- * where additionalProperties creates a nested properties.properties structure.
+ * @description Helper class for setting dynamic properties and required parameters on OpenAI Tool objects.
+ * Handles both JSON properties transformation and required fields assignment for Salesforce External Services.
  * ---------------------------------
  * @author Arthur Nunes - Mr.Hewbuc
  * @created September 14, 2025
- * @modified September 14, 2025
+ * @modified September 21, 2025
  * ---------------------------------
- * @version 1.0
+ * @version 1.1
  */
 public class mf_FlowUtils_OpenAI_ToolObjRequest {
     
     /**
      * @description Invocable method to set dynamic properties on OpenAI Tool parameters.
      * Takes a tool object and JSON properties, then assigns them to the parameters.properties field.
-     * @param inputs List of FlowInput containing the tool object and properties JSON
+     * @param inputs List of PropertiesInput containing the tool object and properties JSON
      * @return List of RequestWrapper containing the modified tool object
      */
-    @InvocableMethod(label='Set Tool Parameters Properties' description='Set the parameters.properties field for OpenAI Tool')
-    public static List<RequestWrapper> setProperties(List<FlowInput> inputs) {
+    @InvocableMethod(label='Set Tool Parameters Properties' description='Set the parameters fields for OpenAI Tool')
+    public static List<RequestWrapper> setProperties(List<PropertiesInput> inputs) {
         List<RequestWrapper> results = new List<RequestWrapper>();
         
-        for(FlowInput input : inputs) {
+        for(PropertiesInput input : inputs) {
             try {
                 ExternalService.mrhewbuc.OpenAIRs_VT_Tools tool = input.toolObject;
                 
-                if(String.isNotBlank(input.propertiesJson) && tool.parameters != null) {
-                    // Create properties object if null
-                    if (tool.parameters.properties == null) {
-                        tool.parameters.properties = new ExternalService.mrhewbuc.OpenAIRs_VT_Tools_parameters_properties();
-                    }
-                    
-                    // Parse JSON and assign map directly to the nested properties field
-                    // The structure is parameters.properties.properties due to Salesforce's handling of additionalProperties
-                    Map<String, Object> propertiesMap = (Map<String, Object>) JSON.deserializeUntyped(input.propertiesJson);
-                    tool.parameters.properties.properties = propertiesMap;
-                    tool.parameters.properties.properties_set = true;
+                // Set properties if provided
+                if(String.isNotBlank(input.propertiesJson)) {
+                    setToolProperties(tool, input.propertiesJson);
+                }
+                
+                // Set required fields if provided
+                if(String.isNotBlank(input.requiredFieldsString)) {
+                    setToolRequired(tool, input.requiredFieldsString);
                 }
                 
                 RequestWrapper wrapper = new RequestWrapper();
@@ -56,10 +52,55 @@ public class mf_FlowUtils_OpenAI_ToolObjRequest {
     }
     
     /**
-     * @description Inner class representing the input parameters for the invocable method from Salesforce Flow.
-     * Contains the tool object to modify and the JSON string with properties to set.
+     * @description Helper method to set properties on the tool parameters
+     * @param tool The OpenAI Tool object to modify
+     * @param propertiesJson JSON string containing the properties
      */
-    public class FlowInput {
+    private static void setToolProperties(ExternalService.mrhewbuc.OpenAIRs_VT_Tools tool, String propertiesJson) {
+        if(tool.parameters == null) {
+            return;
+        }
+        
+        // Create properties object if null
+        if (tool.parameters.properties == null) {
+            tool.parameters.properties = new ExternalService.mrhewbuc.OpenAIRs_VT_Tools_parameters_properties();
+        }
+        
+        // Parse JSON and assign map directly to the nested properties field
+        // The structure is parameters.properties.properties due to Salesforce's handling of additionalProperties
+        Map<String, Object> propertiesMap = (Map<String, Object>) JSON.deserializeUntyped(propertiesJson);
+        tool.parameters.properties.properties = propertiesMap;
+        tool.parameters.properties.properties_set = true;
+    }
+    
+    /**
+     * @description Helper method to set required fields on the tool parameters
+     * @param tool The OpenAI Tool object to modify
+     * @param requiredFieldsString Comma-delimited string of required field names
+     */
+    private static void setToolRequired(ExternalService.mrhewbuc.OpenAIRs_VT_Tools tool, String requiredFieldsString) {
+        if(tool.parameters == null) {
+            return;
+        }
+        
+        // Split the comma-delimited string into a list
+        List<String> requiredFields = requiredFieldsString.split(',');
+        
+        // Trim whitespace from each field name
+        for(Integer i = 0; i < requiredFields.size(); i++) {
+            requiredFields[i] = requiredFields[i].trim();
+        }
+        
+        // Set the required fields list
+        tool.parameters.required = requiredFields;
+        tool.parameters.required_set = true;
+    }
+    
+    /**
+     * @description Inner class representing the input parameters for the invocable method from Salesforce Flow.
+     * Contains the tool object to modify and both properties JSON and required fields string.
+     */
+    public class PropertiesInput {
         /**
          * @description The OpenAI Tool object from External Service to be modified
          */
@@ -72,6 +113,13 @@ public class mf_FlowUtils_OpenAI_ToolObjRequest {
          */
         @InvocableVariable(required=false)
         public String propertiesJson;
+        
+        /**
+         * @description Comma-delimited string of field names that are required for the tool
+         * Example: "param1,param2,param3"
+         */
+        @InvocableVariable(required=false)
+        public String requiredFieldsString;
     }
     
     /**
