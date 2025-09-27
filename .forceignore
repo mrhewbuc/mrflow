@@ -25,3 +25,9 @@ package.xml
 # Global Value Sets
 **/globalValueSets/MF_AIProviders.globalValueSet-meta.xml
 **/globalValueSets/MF_AIModels.globalValueSet-meta.xml
+
+# Standard Value Set
+**/standardValueSets/
+
+**/layouts/*-*.layout-meta.xml:CurrencyIsoCode
+**CurrencyIsoCode**

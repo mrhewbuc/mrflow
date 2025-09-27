@@ -61,15 +61,24 @@ public class mf_FlowUtils_OpenAI_ToolObjRequest {
             return;
         }
         
-        // Create properties object if null
         if (tool.parameters.properties == null) {
             tool.parameters.properties = new ExternalService.mrhewbuc.OpenAIRs_VT_Tools_parameters_properties();
         }
         
-        // Parse JSON and assign map directly to the nested properties field
-        // The structure is parameters.properties.properties due to Salesforce's handling of additionalProperties
+        // Deserialize and ensure proper Map structure
         Map<String, Object> propertiesMap = (Map<String, Object>) JSON.deserializeUntyped(propertiesJson);
-        tool.parameters.properties.properties = propertiesMap;
+        
+        // Process each property to ensure correct structure
+        Map<String, Object> processedMap = new Map<String, Object>();
+        for(String key : propertiesMap.keySet()) {
+            Object value = propertiesMap.get(key);
+            // Ensure each property value is a proper Map
+            if(value instanceof Map<String, Object>) {
+                processedMap.put(key, value);
+            }
+        }
+        
+        tool.parameters.properties.properties = processedMap;
         tool.parameters.properties.properties_set = true;
     }
     

@@ -4,7 +4,7 @@
 
 [![Salesforce API](https://img.shields.io/badge/Salesforce%20API-v64.0-blue)](https://developer.salesforce.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Package Version](https://img.shields.io/badge/Package-v0.1.0.2--BETA-orange)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tJ8000000xA9WIAU)
+[![Package Version](https://img.shields.io/badge/Package-v0.1.0.4--BETA-orange)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tJ8000000xA9WIAU)
 
 ## 🎯 Vision
 
@@ -31,7 +31,7 @@ Install the latest version directly in your Salesforce org:
 
 **Sandbox:**
 ```
-https://test.salesforce.com/packaging/installPackage.apexp?p0=04tJ8000000xAsAIAU
+https://test.salesforce.com/packaging/installPackage.apexp?p0=04tJ8000000xAsKIAU
 ```
 
 ## 🎨 Current Features
@@ -50,6 +50,14 @@ https://test.salesforce.com/packaging/installPackage.apexp?p0=04tJ8000000xAsAIAU
 - **Minimal Apex Footprint**: Strategic use of Apex only where necessary - most logic lives in Flows
 - **Platform Event Architecture**: Decouple flow components for better scalability and handoff capabilities
 
+#### Flow-as-Tool System
+- **Tool Registration**: Any Salesforce Flow can be registered as an AI tool that the LLM can call
+- **Tool Configuration App**: Lightning app to create and manage tool configurations
+- **Multi-Tool Orchestration**: LLM can call multiple flows independently in a single conversation
+- **Tool Examples Included**:
+- `tool_get_case_classification` - Retrieves case picklist values
+- `tool_case_classification_update` - Updates case classification fields
+
 #### 🎛️ Metadata-Driven Configuration
 - **AI Conductor Settings**: Configure AI models and configuration via custom metadata
 
@@ -59,6 +67,13 @@ https://test.salesforce.com/packaging/installPackage.apexp?p0=04tJ8000000xAsAIAU
 A dedicated, optimized flow specifically for OpenAI integration:
 - Pre-configured for GPT models using Response Endpoint
 - Easy use of the Response ID for memory management
+
+#### Working Examples
+- **Case Classification Conductor**: Complete implementation showing:
+- LLM reads available case types and priorities
+- Analyzes case description
+- Updates case with appropriate classification
+- Uses `Sample_Conductor_Engine_Case_Classification` flow
 
 ## 🗺️ Roadmap
 

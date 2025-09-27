@@ -95,6 +95,10 @@
                 <elementReference>Tool</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Tool</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
         <connector>
             <targetReference>LP</targetReference>
         </connector>
@@ -179,7 +183,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Call_OpenAI</targetReference>
+            <targetReference>Tools</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -481,9 +485,9 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>Set_Function_Reply</targetReference>
+            <targetReference>Create_Invalid_Source</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Function</defaultConnectorLabel>
+        <defaultConnectorLabel>Error</defaultConnectorLabel>
         <rules>
             <name>Direct</name>
             <conditionLogic>and</conditionLogic>
@@ -498,6 +502,21 @@
                 <targetReference>Set_User_Prompt</targetReference>
             </connector>
             <label>Direct</label>
+        </rules>
+        <rules>
+            <name>Function</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>in_Source</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>function_call</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Function_Reply</targetReference>
+            </connector>
+            <label>Function</label>
         </rules>
     </decisions>
     <decisions>
@@ -587,6 +606,32 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Invalid_Source</name>
+        <label>Create Invalid Source</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Error__c</field>
+            <value>
+                <stringValue>{!in_Source} is invalid!</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Process__c</field>
+            <value>
+                <stringValue>OpenAI - Async Call - Response Endpoint(Flow)</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Step__c</field>
+            <value>
+                <stringValue>Source Decision</stringValue>
+            </value>
+        </inputAssignments>
+        <object>MFErrors__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordCreates>
         <name>Create_OpenAI_Error</name>
         <label>Create OpenAI Error</label>
@@ -841,13 +886,5 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>ToolCalls</name>
-        <dataType>Number</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <scale>0</scale>
     </variables>
 </Flow>

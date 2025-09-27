@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Case_Values</name>
+        <label>Set Case Values</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>rec_Case.Reason</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>for_CaseReason</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>rec_Case.Type</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>for_CaseType</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>rec_Case.Id</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>for_CaseId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Case</targetReference>
+        </connector>
+    </assignments>
+    <environments>Default</environments>
+    <formulas>
+        <name>for_CaseId</name>
+        <dataType>String</dataType>
+        <expression>MID(
+  {!jsonString},
+  FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;case_id&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;case_id&quot;:&apos;)) + 1,
+  FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;case_id&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;case_id&quot;:&apos;)) + 1)
+  - FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;case_id&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;case_id&quot;:&apos;)) - 1
+)</expression>
+    </formulas>
+    <formulas>
+        <name>for_CaseReason</name>
+        <dataType>String</dataType>
+        <expression>MID(
+  {!jsonString},
+  FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;reason&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;reason&quot;:&apos;)) + 1,
+  FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;reason&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;reason&quot;:&apos;)) + 1)
+  - FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;reason&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;reason&quot;:&apos;)) - 1
+)</expression>
+    </formulas>
+    <formulas>
+        <name>for_CaseType</name>
+        <dataType>String</dataType>
+        <expression>MID(
+  {!jsonString},
+  FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;type&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;type&quot;:&apos;)) + 1,
+  FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;type&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;type&quot;:&apos;)) + 1) 
+  - FIND(&apos;&quot;&apos;, {!jsonString}, FIND(&apos;&quot;type&quot;:&apos;, {!jsonString}) + LEN(&apos;&quot;type&quot;:&apos;)) - 1
+)</expression>
+    </formulas>
+    <interviewLabel>toll_case_classification_update {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>tool_case_classification_update</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Case</name>
+        <label>Update Case</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputReference>rec_Case</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Case_Values</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>jsonString</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>rec_Case</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case</objectType>
+    </variables>
+</Flow>

@@ -94,7 +94,7 @@
         <label>Action</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnectorLabel>Conductor</defaultConnectorLabel>
+        <defaultConnectorLabel>Others</defaultConnectorLabel>
         <rules>
             <name>Function_Call</name>
             <conditionLogic>and</conditionLogic>

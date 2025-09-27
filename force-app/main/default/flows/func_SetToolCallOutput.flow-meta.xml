@@ -43,7 +43,7 @@
             <assignToReference>Output</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>[&quot;3519292832872&quot;,&quot;5522334504094&quot;]</stringValue>
+                <elementReference>in_ToolCallResult</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -199,8 +199,8 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <interviewLabel>tool_get_active_asset_list {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>tool_get_active_asset_list</label>
+    <interviewLabel>func_SetFunctionCallOutput {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>func_SetToolCallOutput</label>
     <loops>
         <name>LP</name>
         <label>LP</label>
@@ -241,7 +241,7 @@
             <targetReference>LP</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <subflows>
         <name>Call_OpenAI</name>
         <label>Call OpenAI</label>
@@ -286,6 +286,13 @@
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>in_ToolCallResult</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
